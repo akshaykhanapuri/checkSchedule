@@ -1,0 +1,189 @@
+{
+  "description": "Voice",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "check_schedule",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "check_schedule",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_1",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZS9b46d41b71229ceb68ca2e63393e882f",
+        "environment_sid": "ZE1b076e2b2dfd4a9d3e6fda8471b83a4e",
+        "offset": {
+          "x": 220,
+          "y": 210
+        },
+        "function_sid": "ZH3ffbbf2d38ea4167b4f10c1102d08626",
+        "url": "https://checkschedule-2501-dev.twil.io/checkSchedule"
+      }
+    },
+    {
+      "name": "split_1",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "Play_Online_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{widgets.check_schedule.parsed.connectCustomer}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "next": "Play_Offline_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to false",
+              "arguments": [
+                "{{widgets.check_schedule.parsed.connectCustomer}}"
+              ],
+              "type": "equal_to",
+              "value": "false"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_schedule.parsed.connectCustomer}}",
+        "offset": {
+          "x": 250,
+          "y": 470
+        }
+      }
+    },
+    {
+      "name": "Play_Offline_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "capture_voicemail",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 590,
+          "y": 750
+        },
+        "loop": 1,
+        "say": "{{widgets.check_schedule.parsed.messageBody}}"
+      }
+    },
+    {
+      "name": "Play_Online_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "Connect_call_to_flex",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 130,
+          "y": 750
+        },
+        "loop": 1,
+        "say": "{{widgets.check_schedule.parsed.messageBody}}"
+      }
+    },
+    {
+      "name": "Connect_call_to_flex",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 60,
+          "y": 1080
+        },
+        "workflow": "WWd59c0445d74f3c98176da49cf7a44d9b",
+        "channel": "TC2cec1b8ebdb60f35fb84b246637cd679"
+      }
+    },
+    {
+      "name": "capture_voicemail",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "transcribe": false,
+        "offset": {
+          "x": 620,
+          "y": 960
+        },
+        "trim": "trim-silence",
+        "play_beep": "true",
+        "timeout": 5,
+        "max_length": 3600
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}

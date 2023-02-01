@@ -1,0 +1,33 @@
+{
+  "timezone": "Asia/Calcutta",
+
+  "workingDays": {
+    "Sunday": false,
+    "Monday": true,
+    "Tuesday": true,
+    "Wednesday": true,
+    "Thursday": true,
+    "Friday": true,
+    "Saturday": false
+  },
+
+  "workingHours": {
+    "start": "09:00",
+    "end": "18:00"
+  },
+
+  "holidays": {
+    "12/25/2023": {
+      "description": "Christmas",
+      "message": "Thank you for reaching out to Twilio. It is Christmas time and our team is off duty today"
+    },
+    "04/09/2023": {
+      "description": "Easter",
+      "message": "Thank you for reaching out to Twilio. It is Easter time and our team is off duty today"
+    },
+    "11/23/2023": {
+      "description": "ThanksGiving",
+      "message": "Thank you for reaching out to Twilio. It is Thanks giving time and our team is off duty today"
+    }
+  }
+}
